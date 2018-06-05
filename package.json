@@ -1,5 +1,5 @@
 {
-  "name": "redux_react",
+  "name": "multi_pages_form",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -18,7 +18,8 @@
     "react-transition-group": "^2.3.1",
     "reactstrap": "^6.0.1",
     "redux": "^4.0.0",
-    "redux-thunk": "^2.2.0"
+    "redux-thunk": "^2.2.0",
+    "validator": "^10.3.0"
   },
   "scripts": {
     "start": "react-scripts start",

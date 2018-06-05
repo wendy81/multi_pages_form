@@ -1,114 +1,146 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Container, Row, Col, Table } from 'reactstrap';
+import { Container, Row, Col} from 'reactstrap';
+import { Form, actions } from 'react-redux-form';
 import { connect } from 'react-redux';
+import { isEmail, isEmpty, isLength } from 'validator';
 
-import { UserActions }  from '../Actions/UserActions';
-import AlertComponent from './AlertComponent';
-import ModalComponent from './ModalComponent';
+import FormGeneral from './FormGeneral';
+import FormContact from './FormContact';
+import FormLocal from './FormLocal';
+
 
 class HomeComponent extends React.Component {
 
-  componentDidMount() {
-    this.props.dispatch(UserActions.GetAll())
-  }
-
-  handlerExit(){
-    const { history, dispatch } = this.props;
-    dispatch(UserActions.Logout(history))
-  }
-
-  handlerIsDel(id, userId, refs){
+  handleSubmit(values) {
     const { dispatch } = this.props;
-    let textContent = this[refs].current.textContent
-    dispatch(UserActions.IsDelList(id, userId, textContent))
+    dispatch( actions.change('user.sumitStatus', <div className='text_center succeed'>Congratulation, submit succeed.</div>))
   }
 
-  handlerEditable(refs, editRefs, saveRefs){
-    this[refs].current.setAttribute("contentEditable", true);
-    this[refs].current.focus();
-    this[editRefs].current.style = 'display:none'
-    this[saveRefs].current.style = 'display:block'
-  } 
-
-  handlerEdit(refs,editRefs, saveRefs, id, userId){
+  handleSubmitFailed(values) {
     const { dispatch } = this.props;
-    this[editRefs].current.style = 'display:block'
-    this[saveRefs].current.style = 'display:none'
-    let textContent = this[refs].current.textContent
-    dispatch(UserActions.EditList(id, userId, textContent))
-  }      
+    dispatch( actions.change('user.sumitStatus', <div className='text_center focused'>Sorry, submit failed.</div>))
+  }
+
+  handleTouchStart(e){
+    const touchList = e.changedTouches[0];
+    this.startX = touchList.pageX;
+    this.startTime = new Date().getTime();
+  }
+
+  handleTouchEnd(e){
+    const touchList = e.changedTouches[0];
+    this.endX = touchList.pageX;
+    this.endTime = new Date().getTime();
+    const { user, dispatch } = this.props;
+    let index= 0;
+    let distX = Math.abs(this.startX - this.endX) > 100
+    let elapsedTime = (this.endTime - this.startTime) > 100 
+
+    // console.log(this.startX > this.endX)
+    // console.log(distX)
+    // console.log(elapsedTime)
+
+    if ( this.startX !== this.endX) {
+
+      if (this.startX > this.endX && distX && elapsedTime) {
+          user.currentIndex !== 2 ? index = user.currentIndex + 1 : index = 0;
+      } else if (this.startX < this.endX && distX && elapsedTime) {
+          user.currentIndex !== 0 ? index = user.currentIndex - 1 : index = 2;
+      }  
+
+      dispatch( actions.change('user.currentIndex', index))
+    }
+    
+  }
+
+  handleTouchMove(e){
+    console.log('moving')
+    // e.preventDefault()
+  }
 
   render() {
-    const { alertType, alertMessage, user, users } = this.props;
-    const { modalTitle, modalMessage, ids } = this.props;
-    const username = user ? user.username : ''
-    const usersList = users ?  users.map( (val, index) => {
-      let id = val.id;
-      let userId = user.id;
-      let refs = 'ref' + index;
-      let editRefs = 'edit' + index;
-      let saveRefs = 'save' + index;
-      this[refs] = React.createRef();
-      this[editRefs] = React.createRef();
-      this[saveRefs] = React.createRef();
-      return (
-          <tr key={val.id}>
-            <th scope="row">{val.id}</th>
-            <td ref={this[refs]}>{val.username}</td>
-            <td onClick={this.handlerIsDel.bind( this, id, userId, refs )}>DEL</td>
-            <td ref={this[editRefs]} onClick={this.handlerEditable.bind( this, refs, editRefs, saveRefs )}>EDIT</td>
-            <td style={{display:'none'}} ref={this[saveRefs]} onClick={this.handlerEdit.bind( this, refs, editRefs, saveRefs, id, userId )}>SAVE</td>            
-          </tr>
-      )
-    }): [] 
 
+    const { user } = this.props;
+    const longUsernameEnough = (val) => isLength(val, {min:0, max:8});
+    const required = (val) => !isEmpty(val);
+    const showFun = (field) => field.focus || field.submitFailed
+    const controlMapProps = {className: ({fieldValue}) => !fieldValue.valid? 'focused': ''}
 
+    const userKeys = Object.keys(user).slice(0,3);
+    const currentIndex= user.currentIndex
 
     return (
-      <div>
-        <Container>
+        <Container
+        onTouchStart = { this.handleTouchStart.bind(this) }
+        onTouchMove = { this.handleTouchMove.bind(this) }
+        onTouchEnd = { this.handleTouchEnd.bind(this) }
+        >
 
-        <Row className='pos_rel'>
 
-        <AlertComponent  alertMessage={alertMessage} alertType={alertType} />
+          <Form 
+          model="user" 
+          onSubmit={(values) => this.handleSubmit(values)}
+          onSubmitFailed={(values) => this.handleSubmitFailed(values)}
+          className='vertical_block_spacing reg_login_form'
+          >
 
-        <ModalComponent 
-          hasOpen={ modalTitle ? true: false } 
-          className="modalClassName" 
-          modalTitle={modalTitle} 
-          modalMessage={modalMessage}
-          ids = {ids}  
-          dispatch={this.props.dispatch}
-        />
 
-        <Col style={{ overflow:'hidden',padding:0}} >
-          <img style={{width:'140%', height:'auto'}} src="https://uploads.codesandbox.io/uploads/user/cb43ebff-9aa5-4c6f-b63f-881bbdd80331/OVwp-detail_block1@3x.png"  alt="img"/>
-          <Row style={{padding:'10px', position: 'absolute', right:0, top:0}}>
-            <Col xs="6" className="text-left">username:{username}</Col>
-            <Col xs="6" className="text-right" onClick={this.handlerExit.bind(this)}>Exit</Col>
-          </Row>   
+          <div key={userKeys[currentIndex]}>
+            <Row>
+            <Col className='header_title'>
+              {userKeys[currentIndex]}
+            </Col>
+            </Row>
+
+            { currentIndex === 0  &&
+            <FormGeneral  
+            modelPath={"." + userKeys[currentIndex]} 
+            longUsernameEnough = {longUsernameEnough} 
+            required= {required} 
+            showFun={showFun}
+            controlMapProps = {controlMapProps}
+            />
+            }
+
+            { currentIndex === 1  &&
+             <FormLocal  
+             modelPath={"." + userKeys[currentIndex]} 
+             longUsernameEnough = {longUsernameEnough} 
+             required= {required} 
+             showFun={showFun}
+             controlMapProps = {controlMapProps}
+             />
+            } 
+
+
+            { currentIndex === 2  &&
+            <FormContact  
+            modelPath={"." + userKeys[currentIndex]} 
+            isEmail = {isEmail} 
+            isLength={isLength} 
+            required= {required} 
+            showFun={showFun}
+            controlMapProps = {controlMapProps}
+            />
+            }            
+
             
-        </Col>
+            <Row>
+            <Col className='indicate'>
+              <ul>
+              <li className={ currentIndex === 0 ? 'active' : ''}></li>
+              <li className={ currentIndex === 1 ? 'active' : ''}></li>
+              <li className={ currentIndex === 2 ? 'active' : ''}></li>
+              </ul>
+            </Col>
+            </Row>
+          </div>
 
-        
-        <Table dark className='user_list_table opacity'>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>User Name</th>
-            <th colSpan='2'>Edit</th>
-          </tr>
-        </thead>
-        <tbody>
-          { usersList }
-        </tbody>
-        </Table>
 
-        </Row>
+          </Form>
 
         </Container>  
-      </div>
     );
 
   }
@@ -123,21 +155,12 @@ Container.propTypes = {
 
 // Add this function:
 function mapStateToProps(state, ownProps) {
+  // console.log(state)
   return {
-    history: ownProps.history,
-    alertMessage:state.AlertReducer.message,
-    alertType:state.AlertReducer.type,
-    users: state.HomeReducer.users,
-    user: state.HomeReducer.user,
-
-    hasOpen:state.ModalReducer.hasOpen,
-    modalTitle: state.ModalReducer.modalTitle,
-    modalMessage: state.ModalReducer.modalMessage,
-    ids:state.ModalReducer.ids
+    user: state.user
   };
 }
 
 export default connect(mapStateToProps)(HomeComponent);
-
 
 

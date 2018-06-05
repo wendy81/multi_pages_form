@@ -5,35 +5,33 @@ import thunk from 'redux-thunk';
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom';
 
-import { PrivateRoute } from './Components/PrivateRoute';
-
 import { createForms } from 'react-redux-form';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './style.css';
 
-import RegisterComponent from './Components/RegisterComponent'
-import LoginComponent from './Components/LoginComponent'
 import HomeComponent from './Components/HomeComponent'
 
-import AlertReducer from './Reducers/AlertReducer';
-import RegisterReducer from './Reducers/RegisterReducer';
-import { LoginReducer, LogoutReducer }  from './Reducers/LoginReducer';
-import HomeReducer from './Reducers/HomeReducer'
-import ModalReducer from './Reducers/ModalReducer'
+
 
 
 const rootReducer = combineReducers({
-    AlertReducer,
-    RegisterReducer,
-    LoginReducer,
-    LogoutReducer,
-    HomeReducer,
-    ModalReducer,
     ...createForms({
-	    register: {username:'', password:'', confirmPassword:''},
-	    login: {username:'', password:''},
-    })
+	    user: {
+	    	general:{firstName:'',lastName:'',birthday:'',gender: {options:['Male', 'Female'], selected:"Female"}  },
+	    	local:{
+	    		Position:{options:['School', 'Bachelor', 'College', 'Master'], selected:["School"]},
+	    		Program:{
+	    			options:['Graphic & Web Design', 'Digital Marketing', 'Programming', 'System Administration'], 
+	    			selected:['Graphic & Web Design']
+	    		}
+	    	},
+	    	contact:{phone:'', mail:'', address:'', note:''},
+	    	hasAccepted:false,
+	    	currentIndex:0,
+	    	sumitStatus:''
+	    },
+    }),
 });
 
 const store = createStore(rootReducer, applyMiddleware(thunk));
@@ -45,10 +43,8 @@ class App extends React.Component {
 			<BrowserRouter>
 			<div>
 				<Switch>
-				<Route path="/register" component={RegisterComponent} />
-				<Route path="/login" component={LoginComponent} />
-				<PrivateRoute  path="/lists" component={HomeComponent} />
-				<Redirect to="/lists"/>
+				<Route path="/home" component={HomeComponent} />
+				<Redirect to="/home" component={HomeComponent} />
 				</Switch>
 			</div>
 			</BrowserRouter>
