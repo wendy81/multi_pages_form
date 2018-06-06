@@ -12,7 +12,7 @@ class FormContact extends React.Component {
     const isLength = this.props.isLength;
     return(
     	<Row>
-          <Col>
+          <Col style={{marginBottom:'40px'}}>
 
               <div className='block_top'></div>
 
@@ -105,7 +105,7 @@ class FormContact extends React.Component {
                 
                
 
-                <div className='reg_login_form block_top'>
+                <div className='reg_login_form'  style={{marginTop:'10px'}}>
                   <Button type="submit" size="lg" block>SUBMIT</Button>
                   {sumitStatus}
                 </div> 

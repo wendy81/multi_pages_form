@@ -10,10 +10,7 @@ import { createForms } from 'react-redux-form';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './style.css';
 
-import HomeComponent from './Components/HomeComponent'
-
-
-
+import Home from './Components/Home'
 
 const rootReducer = combineReducers({
     ...createForms({
@@ -43,8 +40,8 @@ class App extends React.Component {
 			<BrowserRouter>
 			<div>
 				<Switch>
-				<Route path="/home" component={HomeComponent} />
-				<Redirect to="/home" component={HomeComponent} />
+				<Route path="/home" component={Home} />
+				<Redirect to="/home" component={Home} />
 				</Switch>
 			</div>
 			</BrowserRouter>
@@ -54,8 +51,8 @@ class App extends React.Component {
 }
 
 store.subscribe(() => {
-  // var state = store.getState();
-  // console.log(state)
+  var state = store.getState();
+  console.log(state)
 });
 
 

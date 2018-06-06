@@ -1,9 +1,27 @@
 import React from 'react';
 import { Row, Col} from 'reactstrap';
-import { Control, Errors, Fieldset } from 'react-redux-form';
+import { Control, Errors, Fieldset, Field } from 'react-redux-form';
 import { connect } from 'react-redux';
+import Calendar from './Calendar';
 
 class FormGeneral extends React.Component {
+  state = {
+    time: new Date(),
+    isOpen: false,
+  }
+
+
+  handleClick = () => {
+    this.setState({ isOpen: true });
+  }
+
+  handleCancel = () => {
+    this.setState({ isOpen: false });
+  }
+
+  handleSelect = (time) => {
+    this.setState({ time, isOpen: false });
+  }  
 
   render() {
 
@@ -58,25 +76,14 @@ class FormGeneral extends React.Component {
                 /> 
                 </div>
 
-                 <Control
-                  type="date"
+                <Control
                   model=".birthday"  
-                  id="birthday"
-                  validators={{required : this.props.required}}
-                  placeholder="DD/MM/YYYY"
+                  component = {Calendar}
                 />
+
                 <div className="errors">
-                <Errors
-                  className="errors"
-                  model=".birthday"
-                  show={showFun}
-                  messages={{
-                    required: 'Required'
-                  }}
-                 
-                />
                 </div>
-                
+
                 <Control.select 
                 model=".gender.selected" 
                 id="gender"

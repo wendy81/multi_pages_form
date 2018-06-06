@@ -11,6 +11,10 @@ import FormLocal from './FormLocal';
 
 
 class HomeComponent extends React.Component {
+  constructor(props){
+    super(props);
+    this.ulRef = React.createRef();
+  }
 
   handleSubmit(values) {
     const { dispatch } = this.props;
@@ -55,8 +59,16 @@ class HomeComponent extends React.Component {
   }
 
   handleTouchMove(e){
-    console.log('moving')
-    // e.preventDefault()
+  }
+
+  handleClick(e) {
+    const currentUlLi = this.ulRef.current.childNodes;
+    const { user, dispatch } = this.props;
+    currentUlLi.forEach((val, i) => {
+      if(e.target === val) {
+        dispatch( actions.change('user.currentIndex', i))
+      }
+    })
   }
 
   render() {
@@ -86,7 +98,7 @@ class HomeComponent extends React.Component {
           >
 
 
-          <div key={userKeys[currentIndex]}>
+          <div style={{marginBottom:"30px"}}>
             <Row>
             <Col className='header_title'>
               {userKeys[currentIndex]}
@@ -123,19 +135,20 @@ class HomeComponent extends React.Component {
             showFun={showFun}
             controlMapProps = {controlMapProps}
             />
-            }            
+            }
+            </div>           
 
             
             <Row>
             <Col className='indicate'>
-              <ul>
+              <ul  ref={this.ulRef} onClick={this.handleClick.bind(this)}>
               <li className={ currentIndex === 0 ? 'active' : ''}></li>
               <li className={ currentIndex === 1 ? 'active' : ''}></li>
               <li className={ currentIndex === 2 ? 'active' : ''}></li>
               </ul>
             </Col>
             </Row>
-          </div>
+         
 
 
           </Form>
