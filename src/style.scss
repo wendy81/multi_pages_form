@@ -44,6 +44,7 @@ body {
 	width:100%;
 	padding-left:1rem;
 	@include prefixBrowser($browser,box-shadow,0 0 0 0);
+	@include prefixBrowser($browser,appearance,none);
 }
 
 .reg_login_form button[type="submit"] {

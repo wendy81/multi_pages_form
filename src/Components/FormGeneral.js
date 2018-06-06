@@ -1,8 +1,9 @@
 import React from 'react';
 import { Row, Col} from 'reactstrap';
-import { Control, Errors, Fieldset, Field } from 'react-redux-form';
+import { Control, Errors, Fieldset } from 'react-redux-form';
 import { connect } from 'react-redux';
 import Calendar from './Calendar';
+import HtmlSelect from './HtmlSelect';
 
 class FormGeneral extends React.Component {
   state = {
@@ -27,6 +28,7 @@ class FormGeneral extends React.Component {
 
   	const { user, modelPath, controlMapProps, showFun } = this.props;
   	const validators = { required : this.props.required, longEnough: this.props.longUsernameEnough };
+    const selectOptions = user.general.gender.options;
 
     return(
     	<Row>
@@ -84,14 +86,11 @@ class FormGeneral extends React.Component {
                 <div className="errors">
                 </div>
 
-                <Control.select 
-                model=".gender.selected" 
-                id="gender"
-                >
-                {user.general.gender.options.map((gender, i) => 
-                  <option value={gender} key={gender}>{gender}</option>
-                )}
-                </Control.select>
+                <Control
+                model=".gender.selected"
+                options={selectOptions}
+                component = {HtmlSelect}
+                />
 
                 <div className="errors">
                 <Errors

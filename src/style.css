@@ -32,7 +32,12 @@ body {
   -moz-box-shadow: 0 0 0 0;
   -webkit-box-shadow: 0 0 0 0;
   -o-box-shadow: 0 0 0 0;
-  -ms-box-shadow: 0 0 0 0; }
+  -ms-box-shadow: 0 0 0 0;
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  -o-appearance: none;
+  -ms-appearance: none; }
 
 .reg_login_form button[type="submit"] {
   background-color: #10c898; }

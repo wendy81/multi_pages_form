@@ -26,7 +26,6 @@ class Calendar extends React.Component {
   handleSelect = (time) => {
     const getTime = this.dateFormat(time)
     this.setState({ time, getTime, isOpen: false });
-    
     this.props.dispatch( actions.change(this.props.name, getTime) )
   } 
 
@@ -77,6 +76,8 @@ class Calendar extends React.Component {
           onSelect={this.handleSelect}
           onCancel={this.handleCancel} 
           theme="default"
+          confirmText="Ok"
+          cancelText="Cancel"
         />
       </div>          
     );

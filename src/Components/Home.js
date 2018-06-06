@@ -63,7 +63,7 @@ class HomeComponent extends React.Component {
 
   handleClick(e) {
     const currentUlLi = this.ulRef.current.childNodes;
-    const { user, dispatch } = this.props;
+    const { dispatch } = this.props;
     currentUlLi.forEach((val, i) => {
       if(e.target === val) {
         dispatch( actions.change('user.currentIndex', i))
